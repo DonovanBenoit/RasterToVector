@@ -8,17 +8,17 @@ clear all;  close all;  clc;
 %
 
 % Set number of colours to use in vector image.
-no_of_colours = 4;
+no_of_colours = 2;
 
 % Percentage of points to keep from each shape.
 % E.G. '10' means discarding 90% of the data.
-quality = 90;
+quality = 5;
 
 % Remove single points?
 REMOVE_POINTS = 1;
 
 % Show figures for intermediary steps?
-SHOW_INTERMEDIATE_FIGURES = 1;
+SHOW_INTERMEDIATE_FIGURES = 0;
 
 % Show output fullscreen? (only when the above = 0)
 SHOW_FULLSCREEN = 1;
@@ -27,7 +27,7 @@ SHOW_FULLSCREEN = 1;
 MEDIAN_FILTER = 1;
 
 % Read in the JPEG.
-img1 = imread('peppers.png');
+img1 = imread('res/HollowRectangleDigital.png');
 
 %--------------------------------------------------------------------------
 
