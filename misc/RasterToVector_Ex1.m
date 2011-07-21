@@ -27,7 +27,7 @@ SHOW_FULLSCREEN = 1;
 MEDIAN_FILTER = 1;
 
 % Read in the JPEG.
-img1 = imread('res/HollowRectangleDigital.png');
+img1 = imread('res/ColoredStarsDigital.png');
 
 %--------------------------------------------------------------------------
 

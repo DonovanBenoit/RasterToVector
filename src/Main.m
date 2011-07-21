@@ -10,4 +10,11 @@ function Main()
 %%% CONSTANTS %%%
 global DISPLAY_PRINTS;
 DISPLAY_PRINTS = 1;
+global MODE;
+MODE = 'photo';
+global SHOW_INTERMEDIATES;
+SHOW_INTERMEDIATES = 1;
 %%%%%%%%%%%%%%%%%
+
+img = imread('ColoredStarsBlackBGDigital.png');
+ToPolys(img,4,100);
