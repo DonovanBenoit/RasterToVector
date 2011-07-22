@@ -1,4 +1,6 @@
 function varargout = r2vGUI(varargin)
+global mVarargin;
+mVarargin = varargin;
 % R2VGUI MATLAB code for r2vGUI.fig
 %      R2VGUI, by itself, creates a new R2VGUI or raises the existing
 %      singleton*.
@@ -43,26 +45,30 @@ else
 end
 % End initialization code - DO NOT EDIT
 
+global mImage;
+global mHeight;
+mHeight = 256;
+global mWidth;
+mWidth = 256;
+mImage = zeros( mHeight, mWidth );
 
 % --- Executes just before r2vGUI is made visible.
-function r2vGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to r2vGUI (see VARARGIN)
+function r2vGUI_OpeningFcn( hObject, eventdata, handles, varargin )
+global mImage;
 
 % Choose default command line output for r2vGUI
 handles.output = hObject;
 
+imshow( mImage, 'Parent', handles.axes1 );
+
 % Update handles structure
-guidata(hObject, handles);
+guidata( hObject, handles );
 
-% UIWAIT makes r2vGUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
-global mImage;
-global mInfo;
 
 % --- Outputs from this function are returned to the command line.
 function varargout = r2vGUI_OutputFcn(hObject, eventdata, handles) 
@@ -75,7 +81,7 @@ function varargout = r2vGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in polybutton.
+% --- Executes on button press in polybutton
 % hObject    handle to polybutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -88,6 +94,10 @@ ToPolys( mImage, 4, 100 );
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function lineButton_Callback( hObject, eventdata, handles )
+global mImage;
+lines = linesGui( 'r2v', hObject);
+linesHandle = guidata( lines );
+linesHandle.setImage( linesHandle, mImage );
 
 % --- Executes on button press in curveButton.
 % hObject    handle to curveButton (see GCBO)
@@ -108,11 +118,15 @@ function fileMenu_Callback(hObject, eventdata, handles)
 
 function open_Callback( hObject, eventdata, handles )
 global mImage;
-global mInfo;
-[name, path] = uigetfile( { '*.bmp; *.png'; '*.*' }, 'Open Image' );
+global mHeight;
+global mWidth;
+
+[name, path] = uigetfile( { '*.bmp; *.png; *.jpg'; '*.*' }, 'Open Image', '../res' );
 pathAndName = strcat( path, name );
 if( ( length( name ) ~= 1 ) & ( length( path ) ~= 1 ) );
-    mInfo = imfinfo( pathAndName );
+    info = imfinfo( pathAndName );
+    mHeight = info.Height;
+    mWidth = info.Width;
     mImage = imread( pathAndName );
     imshow( mImage, 'Parent', handles.axes1 );
     % Console Output   
