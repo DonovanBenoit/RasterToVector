@@ -15,6 +15,6 @@ MODE = 'photo';
 global SHOW_INTERMEDIATES;
 SHOW_INTERMEDIATES = 1;
 %%%%%%%%%%%%%%%%%
-
-img = imread('../res/ColoredStarsBlackBGDigital.png');
-ToPolys(img,4,100);
+%
+img = imread('../res/ColoredStarsDigital.png');
+ToPolys(img,4,5);

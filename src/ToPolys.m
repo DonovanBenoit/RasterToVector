@@ -26,7 +26,7 @@ for i=1:nColors
         layers(i) = {medfilt2(eq(img2+1,i))};
 end
 
-% Ready figure to draw on.
+% Get ready to draw polys
 if SHOW_INTERMEDIATES
     
     set(figure(4), 'Position', [50, 50, size(img2,2), size(img2,1)],...
@@ -50,7 +50,7 @@ for i=1:nColors
     
     % Fill holes.
     layers{i} = imfill(layers{i},'holes');
-
+    
     % Trace edges of continuous blocks of colour. 
     % Data structure is now:
     % 'Layered_img' contains cell array of:
@@ -60,7 +60,6 @@ for i=1:nColors
 
     % Find number of shapes in layer.
     shapes_in_layer = size(layers{i},1);
-
     
     k=1;
     
@@ -88,12 +87,22 @@ for i=1:nColors
     % Find number of shapes in layer.
     shapes_in_layer = size(layers{i},1);
     
-    
     % Plot the shapes as polygons
-    for k=1:shapes_in_layer
-    p = patch(layers{i}{k}(:,2),-layers{i}{k}(:,1),1);
-    set(p,'FaceColor',[map(i,:)]);
-    set(p,'EdgeColor','none');
+    %if(i==2)
+        for k=1:shapes_in_layer
+            p = patch(layers{i}{k}(:,2),-layers{i}{k}(:,1),1);
+
+            if(i == 2)
+                set(p,'FaceColor',[map(i,:)]);
+                %plot(layers{2}{2}(:,2),-layers{2}{2}(:,1),'*')
+                %disp(layers{2}{1})
+            else
+                set(p,'FaceColor',[map(i,:)]);
+            end
+
+            set(p,'EdgeColor','none');
+        end
+   % end
     end
     
 end
