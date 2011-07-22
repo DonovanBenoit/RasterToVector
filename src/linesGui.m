@@ -22,7 +22,7 @@ function varargout = linesGui( varargin )
 
 % Edit the above text to modify the response to help linesGui
 
-% Last Modified by GUIDE v2.5 22-Jul-2011 14:18:40
+% Last Modified by GUIDE v2.5 22-Jul-2011 18:10:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,9 +58,13 @@ handles.output = hObject;
 handles.setImage = @setLineImage;
 
 global mMin;
-mMin = 20;
+mMin = 20.0;
 global mFill;
-mFill = 40;
+mFill = 40.0;
+global mMaxP;
+mMaxP = 5.0;
+global mShowSteps;
+mShowSteps = 1.0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -74,6 +78,8 @@ function setLineImage( handles, image )
 global mImage;
 mImage = image;
 imshow( mImage, 'Parent', handles.axes1 );
+global mBackup;
+mBackup = mImage;
 
 % --- Outputs from this function are returned to the command line.
 function varargout = linesGui_OutputFcn(hObject, eventdata, handles) 
@@ -85,48 +91,77 @@ function varargout = linesGui_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+% --- Executes on button press in resetButton.
+function resetButton_Callback( hObject, eventdata, handles )
+global mBackup;
+global mImage;
 
-% --- Executes on button press in cancelButton.
-function cancelButton_Callback(hObject, eventdata, handles)
-% hObject    handle to cancelButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+mImage = mBackup;
+imshow( mImage, 'Parent', handles.axes1 );
 
 
 % --- Executes on button press in linesButton.
-function linesButton_Callback(hObject, eventdata, handles)
+function linesButton_Callback( hObject, eventdata, handles )
 global mImage;
 global mFill;
 global mMin;
+global mMaxPeaks;
+global mShowSteps;
 
 %axis on, axis normal, hold on;
-edges = edge( rgb2gray( mImage ), 'canny' );
-imshow( edges, 'Parent', handles.axes1 );
-[H, theta, rho] = hough( edges );
-P = houghpeaks( H, 5, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
-lines = houghlines( H, theta, rho, P, 'FillGap', 5, 'MinLength', 7 );
-%imshow( lines, 'Parent', handles.axes1 );
-
-%axes( handles.axes1 );
-for k = 1:length( lines )
-   xy = [ lines( k ).point1; lines( k ).point2 ];
- %plot( handles.axes1, lines( k ).point1, lines( k ).point2 );
- %line( handles.axes1, lines(k) )
-   %if k == 1
-   plot( handles.axes1, lines( k ).point1, lines( k ).point2,'LineWidth',2,'Color','green');
-   %end
-   % Plot beginnings and ends of lines
-   plot( handles.axes1, xy( 1,1 ), xy( 1,2 ), 'x', 'LineWidth', 2, 'Color', 'blue');
-   plot( handles.axes1, xy( 2,1 ), xy( 2,2 ), 'x', 'LineWidth', 2, 'Color', 'blue');
-   hold( handles.axes1 );
+image = rgb2gray( mImage );
+imshow( image, 'Parent', handles.axes1 );
+if mShowSteps == 1
+    pause;
 end
+edges = edge( image, 'canny' );
+imshow( edges, 'Parent', handles.axes1 );
+if mShowSteps == 1
+    pause;
+end
+[H, theta, rho] = hough( edges );
+imshow( H, 'Parent', handles.axes1 );
+imshow( H, [], 'XData', theta, 'YData', rho, 'InitialMagnification', 'fit' );
+if mShowSteps == 1
+    pause;
+end
+P = houghpeaks( H, 5, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
+imshow( P, 'Parent', handles.axes1 );
+if mShowSteps == 1
+    pause;
+end
+lines = houghlines( H, theta, rho, P, 'FillGap', mFill, 'MinLength', mMin );
+%imshow( lines, 'Parent', handles.axes1 );
+%hold( handles.axes1 );
+for k = 1:length(lines)
+   xy = [lines(k).point1; lines(k).point2];
+   hold( handles.axes1 );
+   plot(handles.axes1, xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+
+   % Plot beginnings and ends of lines
+   plot(handles.axes1, xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+   plot(handles.axes1, xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+   
+end
+
+% %axes( handles.axes1 );
+% for k = 1:length( lines )
+%    xy = [ lines( k ).point1; lines( k ).point2 ];
+%  %plot( handles.axes1, lines( k ).point1, lines( k ).point2 );
+%  %line( handles.axes1, lines(k) )
+%    %if k == 1
+%    plot( handles.axes1, lines( k ).point1, lines( k ).point2,'LineWidth',2,'Color','green');
+%    %end
+%    % Plot beginnings and ends of lines
+%    plot( handles.axes1, xy( 1,1 ), xy( 1,2 ), 'x', 'LineWidth', 2, 'Color', 'blue');
+%    plot( handles.axes1, xy( 2,1 ), xy( 2,2 ), 'x', 'LineWidth', 2, 'Color', 'blue');
+%    hold( handles.axes1 );
+% end
 guidata( hObject, handles );
    
-% --- Executes on button press in pushbutton4.
-function pushbutton4_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% --- Executes on button press in apply.
+function apply_Callback( hObject, eventdata, handles )
+global mImage;
 
 function gapFill_Callback( hObject, eventdata, handles )
 global mFill;
@@ -141,7 +176,7 @@ else
 end
 
 
-function minLength_Callback(hObject, eventdata, handles)
+function minLength_Callback( hObject, eventdata, handles )
 global mMin;
 
 min = str2double( get( hObject, 'String' ) );
@@ -152,3 +187,23 @@ else
     mMin = min;
     set( hObject, 'String', mMin );
 end
+
+function showStepsChecked_Callback( hObject, eventdata, handles )
+global mShowSteps;
+mShowSteps = get( hObject,'Value' );
+
+
+
+function maxPeaks_Callback( hObject, eventdata, handles )
+global mMaxPeaks;
+
+max = str2double( get( hObject, 'String' ) );
+if isnan( max ) || ~isreal( max ) 
+    % Restore original value
+    set( hObject, 'String', mMaxPeaks );
+else 
+    mMaxPeaks = max;
+    set( hObject, 'String', mMaxPeaks );
+end
+
+
