@@ -99,23 +99,26 @@ global mImage;
 global mFill;
 global mMin;
 
-axis on, axis normal, hold on;
+%axis on, axis normal, hold on;
 edges = edge( rgb2gray( mImage ), 'canny' );
 imshow( edges, 'Parent', handles.axes1 );
 [H, theta, rho] = hough( edges );
 P = houghpeaks( H, 5, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
-lines = houghlines( H, theta, rho, P, 'FillGap', mFill, 'MinLength', mMin );
+lines = houghlines( H, theta, rho, P, 'FillGap', 5, 'MinLength', 7 );
 %imshow( lines, 'Parent', handles.axes1 );
 
 %axes( handles.axes1 );
 for k = 1:length( lines )
    xy = [ lines( k ).point1; lines( k ).point2 ];
-  
-   plot( handles.axes1, xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-
+ %plot( handles.axes1, lines( k ).point1, lines( k ).point2 );
+ %line( handles.axes1, lines(k) )
+   %if k == 1
+   plot( handles.axes1, lines( k ).point1, lines( k ).point2,'LineWidth',2,'Color','green');
+   %end
    % Plot beginnings and ends of lines
-   %plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-   %plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+   plot( handles.axes1, xy( 1,1 ), xy( 1,2 ), 'x', 'LineWidth', 2, 'Color', 'blue');
+   plot( handles.axes1, xy( 2,1 ), xy( 2,2 ), 'x', 'LineWidth', 2, 'Color', 'blue');
+   hold( handles.axes1 );
 end
 guidata( hObject, handles );
    

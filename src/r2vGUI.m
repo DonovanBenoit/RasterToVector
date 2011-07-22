@@ -127,7 +127,7 @@ global mWidth;
 
 [name, path] = uigetfile( { '*.bmp; *.png; *.jpg'; '*.*' }, 'Open Image', '../res' );
 pathAndName = strcat( path, name );
-if( ( length( name ) ~= 1 ) & ( length( path ) ~= 1 ) );
+if( ( length( name ) ~= 1 ) && ( length( path ) ~= 1 ) );
     info = imfinfo( pathAndName );
     mHeight = info.Height;
     mWidth = info.Width;
