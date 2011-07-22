@@ -22,7 +22,7 @@ function varargout = linesGui( varargin )
 
 % Edit the above text to modify the response to help linesGui
 
-% Last Modified by GUIDE v2.5 22-Jul-2011 12:00:19
+% Last Modified by GUIDE v2.5 22-Jul-2011 14:18:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,11 @@ handles.output = hObject;
 
 handles.setImage = @setLineImage;
 
+global mMin;
+mMin = 20;
+global mFill;
+mFill = 40;
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -81,66 +86,66 @@ function varargout = linesGui_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
+% --- Executes on button press in cancelButton.
+function cancelButton_Callback(hObject, eventdata, handles)
+% hObject    handle to cancelButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on button press in pushbutton3.
-function pushbutton3_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% --- Executes on button press in linesButton.
+function linesButton_Callback(hObject, eventdata, handles)
+global mImage;
+global mFill;
+global mMin;
 
+axis on, axis normal, hold on;
+edges = edge( rgb2gray( mImage ), 'canny' );
+imshow( edges, 'Parent', handles.axes1 );
+[H, theta, rho] = hough( edges );
+P = houghpeaks( H, 5, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
+lines = houghlines( H, theta, rho, P, 'FillGap', mFill, 'MinLength', mMin );
+%imshow( lines, 'Parent', handles.axes1 );
 
+%axes( handles.axes1 );
+for k = 1:length( lines )
+   xy = [ lines( k ).point1; lines( k ).point2 ];
+  
+   plot( handles.axes1, xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+
+   % Plot beginnings and ends of lines
+   %plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+   %plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+end
+guidata( hObject, handles );
+   
 % --- Executes on button press in pushbutton4.
 function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+function gapFill_Callback( hObject, eventdata, handles )
+global mFill;
 
-
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+fill = str2double( get( hObject, 'String' ) );
+if isnan( fill ) || ~isreal( fill ) 
+    % Restore original value
+    set( hObject, 'String', mFill );
+else 
+    mFill = fill;
+    set( hObject, 'String', mFill );
 end
 
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+function minLength_Callback(hObject, eventdata, handles)
+global mMin;
 
-
-% --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+min = str2double( get( hObject, 'String' ) );
+if isnan( min ) || ~isreal( min ) 
+    % Restore original value
+    set( hObject, 'String', mMin );
+else 
+    mMin = min;
+    set( hObject, 'String', mMin );
 end

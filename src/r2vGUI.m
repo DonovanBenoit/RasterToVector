@@ -45,13 +45,6 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-global mImage;
-global mHeight;
-mHeight = 256;
-global mWidth;
-mWidth = 256;
-mImage = zeros( mHeight, mWidth );
-
 % --- Executes just before r2vGUI is made visible.
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
@@ -59,10 +52,16 @@ mImage = zeros( mHeight, mWidth );
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to r2vGUI (see VARARGIN)
 function r2vGUI_OpeningFcn( hObject, eventdata, handles, varargin )
-global mImage;
 
 % Choose default command line output for r2vGUI
 handles.output = hObject;
+
+global mImage;
+global mHeight;
+mHeight = 256;
+global mWidth;
+mWidth = 256;
+mImage = zeros( mHeight, mWidth );
 
 imshow( mImage, 'Parent', handles.axes1 );
 
@@ -88,6 +87,8 @@ varargout{1} = handles.output;
 function polybutton_Callback( hObject, eventdata, handles )
 global mImage;
 ToPolys( mImage, 4, 100 );
+% Update handles structure
+guidata( hObject, handles );
 
 % --- Executes on button press in lineButton.
 % hObject    handle to lineButton (see GCBO)
@@ -95,9 +96,12 @@ ToPolys( mImage, 4, 100 );
 % handles    structure with handles and user data (see GUIDATA)
 function lineButton_Callback( hObject, eventdata, handles )
 global mImage;
-lines = linesGui( 'r2v', hObject);
+imshow( mImage, 'Parent', handles.axes1 );
+lines = linesGui( 'r2v', hObject );
 linesHandle = guidata( lines );
 linesHandle.setImage( linesHandle, mImage );
+% Update handles structure
+guidata( hObject, handles );
 
 % --- Executes on button press in curveButton.
 % hObject    handle to curveButton (see GCBO)
@@ -129,11 +133,14 @@ if( ( length( name ) ~= 1 ) & ( length( path ) ~= 1 ) );
     mWidth = info.Width;
     mImage = imread( pathAndName );
     imshow( mImage, 'Parent', handles.axes1 );
+   
     % Console Output   
     msg = strcat( 'Open Image: ', pathAndName );
     msg = strcat( msg, ' height = ' );
-    msg = strcat( msg, num2str( mInfo.Height ) );
+    msg = strcat( msg, num2str( mHeight ) );
     msg = strcat( msg, ' width = ' );
-    msg = strcat( msg, num2str( mInfo.Width ) );
+    msg = strcat( msg, num2str( mWidth ) );
     set( handles.console, 'String', msg );
 end;
+% Update handles structure
+guidata( hObject, handles );
