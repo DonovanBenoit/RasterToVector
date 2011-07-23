@@ -22,7 +22,7 @@ function varargout = linesGui( varargin )
 
 % Edit the above text to modify the response to help linesGui
 
-% Last Modified by GUIDE v2.5 22-Jul-2011 18:10:37
+% Last Modified by GUIDE v2.5 23-Jul-2011 15:57:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -126,22 +126,22 @@ ylabel( handles.axes1, '\rho' );
 if mShowSteps == 1
     pause;
 end
-P = houghpeaks( H, 100 );%, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
-x = theta( P( :, 2 ) ); 
-y = rho( P( :, 1 ) );
-plot( handles.axes1, x, y, 's', 'color', 'white' );
+peaks = houghpeaks( H, 1000 );%, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
+x = theta( peaks( :, 2 ) ); 
+y = rho( peaks( :, 1 ) );
+plot( handles.axes1, x, y, 's', 'color', 'red' );
 if mShowSteps == 1
     pause;
 end
-lines = houghlines( H, theta, rho, P, 'FillGap', mFill, 'MinLength', mMin );
-imshow( mImage, 'Parent', handles.axes1 );
+lines = houghlines( H, theta, rho, peaks, 'FillGap', mFill, 'MinLength', mMin );
+%imshow( mImage, 'Parent', handles.axes1 );
 
 %hold on;
 for k = 1:length(lines)
-    x1 = lines(k).point1(1);
-    y1 = lines(k).point1(2);
-    x2 = lines(k).point2(1);
-    y2 = lines(k).point2(2);
+    x1 = lines(k).point1(2);
+    y1 = lines(k).point1(1);
+    x2 = lines(k).point2(2);
+    y2 = lines(k).point2(1);
     plot([x1 x2],[y1 y2],'Color','g','LineWidth', 4)
     if k == 1
         hold( handles.axes1 );
@@ -205,8 +205,6 @@ function showStepsChecked_Callback( hObject, eventdata, handles )
 global mShowSteps;
 mShowSteps = get( hObject,'Value' );
 
-
-
 function maxPeaks_Callback( hObject, eventdata, handles )
 global mMaxPeaks;
 
@@ -218,5 +216,3 @@ else
     mMaxPeaks = max;
     set( hObject, 'String', mMaxPeaks );
 end
-
-

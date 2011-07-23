@@ -134,14 +134,6 @@ if( ( length( name ) ~= 1 ) && ( length( path ) ~= 1 ) );
     mWidth = info.Width;
     mImage = imread( pathAndName );
     imshow( mImage, 'Parent', handles.axes1 );
-   
-    % Console Output   
-    msg = strcat( 'Open Image: ', pathAndName );
-    msg = strcat( msg, ' height = ' );
-    msg = strcat( msg, num2str( mHeight ) );
-    msg = strcat( msg, ' width = ' );
-    msg = strcat( msg, num2str( mWidth ) );
-    set( handles.console, 'String', msg );
 end;
 % Update handles structure
 guidata( hObject, handles );
