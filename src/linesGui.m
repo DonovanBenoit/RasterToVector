@@ -132,9 +132,8 @@ if mShowSteps == 1
     pause;
 end
 
-
 % Reduce the number of colors in the image
-[img2,map] = gray2ind( edges, nColors );
+[ img2, map ] = gray2ind( edges, nColors );
 
 for i = 1:nColors
   layers(i) = { medfilt2( eq( img2 + 1, i ) ) };
