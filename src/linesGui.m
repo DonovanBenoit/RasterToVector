@@ -22,7 +22,7 @@ function varargout = linesGui( varargin )
 
 % Edit the above text to modify the response to help linesGui
 
-% Last Modified by GUIDE v2.5 23-Jul-2011 15:57:01
+% Last Modified by GUIDE v2.5 23-Jul-2011 19:58:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -313,4 +313,15 @@ if isnan( max ) || ~isreal( max )
 else 
     mMaxPeaks = max;
     set( hObject, 'String', mMaxPeaks );
+end
+
+
+% --------------------------------------------------------------------
+function saveMenu_Callback( hObject, eventdata, handles )
+[ filename, pathname ] = uiputfile( { '*.svg','Scalable Vector Graphics (*.svg)' }, 'Save figure as','../out');
+
+%if user cancels save command, nothing happens
+if isequal( filename, 0 ) || isequal( pathname, 0 )
+else
+    saveas( handles.axes1, fullfile( pathname, filename ) );
 end
