@@ -87,7 +87,8 @@ varargout{1} = handles.output;
 % handles    structure with handles and user data (see GUIDATA)
 function polybutton_Callback( hObject, eventdata, handles )
 global mImage;
-ToPolys( mImage, 4, 100 );
+
+ToPolys( mImage, 4, 10 );
 % Update handles structure
 guidata( hObject, handles );
 
@@ -97,8 +98,8 @@ guidata( hObject, handles );
 % handles    structure with handles and user data (see GUIDATA)
 function lineButton_Callback( hObject, eventdata, handles )
 global mImage;
-imshow( mImage, 'Parent', handles.axes1 );
-lines = linesGui( 'r2v', hObject );
+
+lines = linesGui( 'Lines', hObject );
 linesHandle = guidata( lines );
 linesHandle.setImage( linesHandle, mImage );
 % Update handles structure
@@ -115,11 +116,6 @@ function curveButton_Callback( hObject, eventdata, handles )
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function fileMenu_Callback(hObject, eventdata, handles)
-
-% --------------------------------------------------------------------
-% hObject    handle to open (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 function open_Callback( hObject, eventdata, handles )
 global mImage;

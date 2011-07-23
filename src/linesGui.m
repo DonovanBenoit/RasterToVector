@@ -50,24 +50,30 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to linesGui (see VARARGIN)
-function linesGui_OpeningFcn(hObject, eventdata, handles, varargin)
+function linesGui_OpeningFcn( hObject, eventdata, handles, varargin )
 
 % Choose default command line output for linesGui
 handles.output = hObject;
 
+% Make setImage visable
 handles.setImage = @setLineImage;
 
+% Initialize global variables
+% Min length to use for lines
 global mMin;
-mMin = 20.0;
+mMin = str2double( get( handles.minLength, 'String' ) );
+% Gap distance to fill in lines
 global mFill;
-mFill = 40.0;
+mFill = str2double( get( handles.gapFill, 'String' ) );
+% Number of peks to detect when using hough
 global mMaxP;
-mMaxP = 5.0;
+mMaxP = str2double( get( handles.maxPeaks, 'String' ) );
+% Flag to show steps in line detection
 global mShowSteps;
 mShowSteps = 1.0;
 
 % Update handles structure
-guidata(hObject, handles);
+guidata( hObject, handles );
 
 % UIWAIT makes linesGui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -82,7 +88,7 @@ global mBackup;
 mBackup = mImage;
 
 % --- Outputs from this function are returned to the command line.
-function varargout = linesGui_OutputFcn(hObject, eventdata, handles) 
+function varargout = linesGui_OutputFcn( hObject, eventdata, handles ) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -99,9 +105,112 @@ global mImage;
 mImage = mBackup;
 imshow( mImage, 'Parent', handles.axes1 );
 
-
 % --- Executes on button press in linesButton.
 function linesButton_Callback( hObject, eventdata, handles )
+
+if get( handles.useHough,'Value' ) == 1
+    houghLines( hObject, handles );
+else
+    set( handles.console, 'String', 'Other' );
+    otherLines( hObject, handles );
+end
+
+function otherLines( hObject, handles )
+global mImage;
+global mShowSteps;
+nColors = 4;
+vertexResolution = 10;
+
+image = rgb2gray( mImage );
+imshow( image, 'Parent', handles.axes1 );
+if mShowSteps == 1
+    pause;
+end
+edges = edge( image, 'canny' );
+imshow( edges, 'Parent', handles.axes1 );
+if mShowSteps == 1
+    pause;
+end
+
+
+% Reduce the number of colors in the image
+[img2,map] = gray2ind( edges, nColors );
+
+for i = 1:nColors
+  layers(i) = { medfilt2( eq( img2 + 1, i ) ) };
+end
+
+subplot(1,2,2);
+
+axis ([0 size(img2,2) -size(img2,1) 0]);
+axis image;
+axis off;
+
+hold on;
+
+% Draw shapes.
+for i=1:nColors
+    
+    % Fill holes.
+    layers{i} = imfill(layers{i},'holes');
+    
+    % Trace edges of continuous blocks of colour. 
+    % Data structure is now:
+    % 'Layered_img' contains cell array of:
+    % ---> 'Layers', which contain cell array of:
+    % ------> 'Shapes' in the layer.
+    layers{i} = bwboundaries(layers{i});
+
+    % Find number of shapes in layer.
+    shapes_in_layer = size(layers{i},1);
+    
+    k=1;
+    
+    while k<=shapes_in_layer
+        
+        % Get number of points in this shape
+        points_in_shape = size(layers{i}{k},1);
+        
+
+        % Percentage of points to keep.
+        points_to_skip = cast( ceil(100/vertexResolution),'uint32');
+       
+        % Reduce number of points in each shape.
+        layers{i}{k} = layers{i}{k}([1:points_to_skip:points_in_shape],[1 2]);
+    
+        % If 'shape' is now a point, remove it.
+
+        if size(layers{i}{k},1) <= 1
+            layers{1,i}{k,1} = [0 0];
+        end
+        k=k+1;
+        
+    end
+    
+    % Find number of shapes in layer.
+    shapes_in_layer = size(layers{i},1);
+    
+    % Plot the shapes as polygons
+    %if(i==2)
+        for k=1:shapes_in_layer
+            p = patch(layers{i}{k}(:,2),-layers{i}{k}(:,1),1);
+
+            if(i == 2)
+                set(p,'FaceColor',[map(i,:)]);
+                %plot(layers{2}{2}(:,2),-layers{2}{2}(:,1),'*')
+                %disp(layers{2}{1})
+            else
+                set(p,'FaceColor',[map(i,:)]);
+            end
+
+            set(p,'EdgeColor','none');
+        end
+   % end    
+end
+
+guidata( hObject, handles );
+
+function houghLines( hObject, handles )
 global mImage;
 global mFill;
 global mMin;
@@ -126,34 +235,25 @@ ylabel( handles.axes1, '\rho' );
 if mShowSteps == 1
     pause;
 end
-peaks = houghpeaks( H, 1000 );%, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
+peaks = houghpeaks( H, 64 );%, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
 x = theta( peaks( :, 2 ) ); 
 y = rho( peaks( :, 1 ) );
 plot( handles.axes1, x, y, 's', 'color', 'red' );
 if mShowSteps == 1
     pause;
 end
-lines = houghlines( H, theta, rho, peaks, 'FillGap', mFill, 'MinLength', mMin );
-%imshow( mImage, 'Parent', handles.axes1 );
-
+lines = houghlines( H, theta, rho, peaks );%, 'FillGap', mFill, 'MinLength', mMin );
+imshow( mImage, 'Parent', handles.axes1 );
+hold( handles.axes1 );
 %hold on;
-for k = 1:length(lines)
+set( handles.console, 'String', length( lines ) );
+for k = 1:length( lines )
+    
     x1 = lines(k).point1(2);
     y1 = lines(k).point1(1);
     x2 = lines(k).point2(2);
     y2 = lines(k).point2(1);
     plot([x1 x2],[y1 y2],'Color','g','LineWidth', 4)
-    if k == 1
-        hold( handles.axes1 );
-    end
-%    xy = [lines(k).point1; lines(k).point2];
-%    %hold( handles.axes1 );
-%    plot(handles.axes1, xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-% 
-%    % Plot beginnings and ends of lines
-%    plot(handles.axes1, xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-%    plot(handles.axes1, xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
-   
 end
 hold( handles.axes1 );
 
@@ -187,7 +287,6 @@ else
     mFill = fill;
     set( hObject, 'String', mFill );
 end
-
 
 function minLength_Callback( hObject, eventdata, handles )
 global mMin;
