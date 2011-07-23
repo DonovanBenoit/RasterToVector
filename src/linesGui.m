@@ -120,29 +120,42 @@ if mShowSteps == 1
     pause;
 end
 [H, theta, rho] = hough( edges );
-imshow( H, 'Parent', handles.axes1 );
-imshow( H, [], 'XData', theta, 'YData', rho, 'InitialMagnification', 'fit' );
+imshow( H, [], 'XData', theta, 'YData', rho, 'InitialMagnification', 'fit', 'Parent', handles.axes1 );
+xlabel( handles.axes1, '\theta');
+ylabel( handles.axes1, '\rho' );
 if mShowSteps == 1
     pause;
 end
-P = houghpeaks( H, 5, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
-imshow( P, 'Parent', handles.axes1 );
+P = houghpeaks( H, 100 );%, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
+x = theta( P( :, 2 ) ); 
+y = rho( P( :, 1 ) );
+plot( handles.axes1, x, y, 's', 'color', 'white' );
 if mShowSteps == 1
     pause;
 end
 lines = houghlines( H, theta, rho, P, 'FillGap', mFill, 'MinLength', mMin );
-%imshow( lines, 'Parent', handles.axes1 );
-%hold( handles.axes1 );
-for k = 1:length(lines)
-   xy = [lines(k).point1; lines(k).point2];
-   hold( handles.axes1 );
-   plot(handles.axes1, xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+imshow( mImage, 'Parent', handles.axes1 );
 
-   % Plot beginnings and ends of lines
-   plot(handles.axes1, xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-   plot(handles.axes1, xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+%hold on;
+for k = 1:length(lines)
+    x1 = lines(k).point1(1);
+    y1 = lines(k).point1(2);
+    x2 = lines(k).point2(1);
+    y2 = lines(k).point2(2);
+    plot([x1 x2],[y1 y2],'Color','g','LineWidth', 4)
+    if k == 1
+        hold( handles.axes1 );
+    end
+%    xy = [lines(k).point1; lines(k).point2];
+%    %hold( handles.axes1 );
+%    plot(handles.axes1, xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+% 
+%    % Plot beginnings and ends of lines
+%    plot(handles.axes1, xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+%    plot(handles.axes1, xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
    
 end
+hold( handles.axes1 );
 
 % %axes( handles.axes1 );
 % for k = 1:length( lines )
