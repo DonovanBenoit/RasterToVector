@@ -11,10 +11,10 @@ else
     
     % Print Header
     fprintf( fid, '<?xml version="1.0" standalone="yes"?>\n' );
-    fprintf( fid, '<!DOCTYPE svg PUBLIC "raster to vector" "scott & donovan">\n' );
+    fprintf( fid, '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "raster 2 vector">\n' );
     
     % SVG Code
-    fprintf( fid, '<svg width="100%%" height="100%%" version="1.1">\n' );
+    fprintf( fid, '<svg width="100%%" height="100%%" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' );
     
     % Create Polygons
     [m,n] = size( points );
