@@ -88,7 +88,10 @@ varargout{1} = handles.output;
 function polybutton_Callback( hObject, eventdata, handles )
 global mImage;
 
-ToPolys( mImage, 4, 10 );
+polys = toPoly( 'Polys', hObject );
+polysHandle = guidata( polys );
+polysHandle.setImage( polysHandle, mImage );
+
 % Update handles structure
 guidata( hObject, handles );
 
