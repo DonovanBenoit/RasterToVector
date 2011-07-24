@@ -25,7 +25,7 @@ mVarargin = varargin;
 
 % Edit the above text to modify the response to help r2vGUI
 
-% Last Modified by GUIDE v2.5 22-Jul-2011 09:59:13
+% Last Modified by GUIDE v2.5 24-Jul-2011 19:35:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -118,12 +118,11 @@ curveHandle.setImage( curveHandle, mImage );
 % Update handles structure
 guidata( hObject, handles );
 
-
 % --------------------------------------------------------------------
 % hObject    handle to fileMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-function fileMenu_Callback(hObject, eventdata, handles)
+function fileMenu_Callback( hObject, eventdata, handles )
 
 function open_Callback( hObject, eventdata, handles )
 global mImage;
@@ -141,3 +140,12 @@ if( ( length( name ) ~= 1 ) && ( length( path ) ~= 1 ) );
 end;
 % Update handles structure
 guidata( hObject, handles );
+
+
+% --- Executes on button press in exportButton.
+function exportButton_Callback(hObject, eventdata, handles)
+fillColors = ['red'];
+strokeColors = ['lime'];
+strokeWidths = [2];
+points = [0, 0, 100, 0, 100, 100, 0, 100];
+toSVG( fillColors, strokeColors, strokeWidths, points )

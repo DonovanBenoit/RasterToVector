@@ -320,10 +320,4 @@ end
 
 % --------------------------------------------------------------------
 function saveMenu_Callback( hObject, eventdata, handles )
-[ filename, pathname ] = uiputfile( { '*.svg','Scalable Vector Graphics (*.svg)' }, 'Save figure as','../out');
-
-%if user cancels save command, nothing happens
-if isequal( filename, 0 ) || isequal( pathname, 0 )
-else
-    saveas( handles.axes1, fullfile( pathname, filename ) );
-end
+toSVG();
