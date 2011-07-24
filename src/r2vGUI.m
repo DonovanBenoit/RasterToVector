@@ -108,11 +108,16 @@ linesHandle.setImage( linesHandle, mImage );
 % Update handles structure
 guidata( hObject, handles );
 
-% --- Executes on button press in curveButton.
-% hObject    handle to curveButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% Create curves sub GUI and set image
 function curveButton_Callback( hObject, eventdata, handles )
+global mImage;
+
+curve = curves( 'Curves', hObject );
+curveHandle = guidata( curve );
+curveHandle.setImage( curveHandle, mImage );
+% Update handles structure
+guidata( hObject, handles );
+
 
 % --------------------------------------------------------------------
 % hObject    handle to fileMenu (see GCBO)
