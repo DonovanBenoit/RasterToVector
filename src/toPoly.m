@@ -55,9 +55,6 @@ function toPoly_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for toPoly
 handles.output = hObject;
 
-% Update handles structure
-guidata(hObject, handles);
-
 % UIWAIT makes toPoly wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -68,6 +65,8 @@ handles.setImage = @setLineImage;
 % Precentage of verticies to keep
 global vertexPrecent;
 vertexPrecent = str2double( get( handles.vertexPrecent, 'String' ) );
+global numColors;
+numColors = str2double( get( handles.numColors, 'String' ) );
 
 % Update handles structure
 guidata( hObject, handles );
@@ -133,9 +132,16 @@ guidata( hObject, handles );
 function resetButton_Callback( hObject, eventdata, handles )
 global mBackup;
 global mImage;
+global numColors;
+global vertexPrecent;
 
 mImage = mBackup;
 imshow( mImage, 'Parent', handles.axes1 );
+
+numColors = 5;
+vertexPrecent = 10;
+set( handles.numColors, 'String', numColors );
+set( handles.vertexPrecent, 'String', vertexPrecent );
 
 % Update handles structure
 guidata( hObject, handles );
