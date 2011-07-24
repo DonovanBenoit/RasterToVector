@@ -86,6 +86,8 @@ mImage = image;
 imshow( mImage, 'Parent', handles.axes1 );
 global mBackup;
 mBackup = mImage;
+% Update handles structure
+guidata( hObject, handles );
 
 % --- Outputs from this function are returned to the command line.
 function varargout = linesGui_OutputFcn( hObject, eventdata, handles ) 

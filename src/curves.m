@@ -22,7 +22,7 @@ function varargout = curves(varargin)
 
 % Edit the above text to modify the response to help curves
 
-% Last Modified by GUIDE v2.5 24-Jul-2011 15:11:42
+% Last Modified by GUIDE v2.5 24-Jul-2011 15:18:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,12 +55,23 @@ function curves_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for curves
 handles.output = hObject;
 
+% Make setImage visable
+handles.setImage = @setLineImage;
+
 % Update handles structure
 guidata(hObject, handles);
 
 % UIWAIT makes curves wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+function setLineImage( handles, image )
+global mImage;
+mImage = image;
+imshow( mImage, 'Parent', handles.axes1 );
+global mBackup;
+mBackup = mImage;
+% Update handles structure
+guidata( hObject, handles );
 
 % --- Outputs from this function are returned to the command line.
 function varargout = curves_OutputFcn(hObject, eventdata, handles) 
@@ -82,22 +93,19 @@ function checkbox3_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of checkbox3
 
 
-% --- Executes on button press in pushbutton7.
-function pushbutton7_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% --- Executes on button press in resetButton.
+function resetButton_Callback(hObject, eventdata, handles)
+global mBackup;
+global mImage;
+
+mImage = mBackup;
+imshow( mImage, 'Parent', handles.axes1 );
+% Update handles structure
+guidata( hObject, handles );
+
+% --- Executes on button press in findCurves.
+function findCurves_Callback(hObject, eventdata, handles)
 
 
-% --- Executes on button press in pushbutton8.
-function pushbutton8_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton8 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in pushbutton9.
-function pushbutton9_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton9 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% --- Executes on button press in applyButton.
+function applyButton_Callback(hObject, eventdata, handles)

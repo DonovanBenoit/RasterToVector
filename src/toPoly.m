@@ -87,6 +87,8 @@ mImage = image;
 imshow( mImage, 'Parent', handles.axes1 );
 global mBackup;
 mBackup = mImage;
+% Update handles structure
+guidata( hObject, handles );
 
 % --- Executes on button press in checkbox1.
 function checkbox1_Callback(hObject, eventdata, handles)
