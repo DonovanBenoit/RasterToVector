@@ -17,21 +17,26 @@ else
     fprintf( fid, '<svg width="100%%" height="100%%" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' );
     
     % Create Polygons
-    [m,n] = size( points );
+    [r, c] = size( points );
+    m = r * c
     for i = 1:m
         % Points
+        p = points{ i };
         fprintf( fid, '<polygon points="' );
         j = 1;
+        [r, c] = size( p );
+        n = r * c;
         while j <= n
-            fprintf( fid, '%i,%i ', points( i, j ), points( i, j + 1 ) );
+            fprintf( fid, '%i,%i ', p( j ), p( j + 1 ) );
             j = j + 2;
         end
         % Fill  
         fprintf( fid, '" fill="' );
-        fprintf( fid, fillColors( i, : ) );
+        fprintf( fid, fillColors{ i } );
+        % Stroke
         fprintf( fid, '" stroke="' );
-        fprintf( fid, strokeColors( i, : ) );
-        fprintf( fid, '" stroke-width="%i', strokeWidths( i ) );
+        fprintf( fid, strokeColors{ i } );
+        fprintf( fid, '" stroke-width="%i', strokeWidths{ i } );
         fprintf( fid, '"/>\n' );
     end
     
