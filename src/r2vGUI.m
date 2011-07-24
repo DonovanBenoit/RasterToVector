@@ -118,12 +118,11 @@ curveHandle.setImage( curveHandle, mImage );
 % Update handles structure
 guidata( hObject, handles );
 
-
 % --------------------------------------------------------------------
 % hObject    handle to fileMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-function fileMenu_Callback(hObject, eventdata, handles)
+function fileMenu_Callback( hObject, eventdata, handles )
 
 function open_Callback( hObject, eventdata, handles )
 global mImage;
