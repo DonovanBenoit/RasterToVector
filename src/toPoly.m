@@ -74,6 +74,10 @@ mShowSteps = 1.0;
 global mImage;
 mImage = zeros( 256, 256 );
 imshow( mImage, 'Parent', handles.axes1 );
+global mCurves;
+mCurves = [];
+global mPolys;
+mPolys = [];
 
 % Update handles structure
 guidata( hObject, handles );
@@ -172,6 +176,8 @@ guidata( hObject, handles );
 % --- Executes on button press in polygonalize.
 function polygonalize_Callback( hObject, eventdata, handles )
 global mImage;
+global mCurves;
+global mPolys;
 global numColors;
 global vertexPrecent;
 global mShowSteps;
@@ -180,7 +186,7 @@ global maxSquareError;
 if get( handles.polyMode, 'Value' )
     ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError );
 elseif get( handles.curveMode, 'Value' );
-    ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError );
+    mCurves = ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError );
 end
 
 % Update handles structure
@@ -188,7 +194,8 @@ guidata( hObject, handles );
 
 % --- Executes on button press in exportButton.
 function exportButton_Callback( hObject, eventdata, handles )
-toSVG( [], [], [], [], [] );
+global mCurves;
+toSVG( [], [], [], [], mCurves );
 
 
 % --- Executes on button press in lineButton.
@@ -204,7 +211,7 @@ guidata( hObject, handles );
 
 % --- Executes on button press in openButton.
 function openButton_Callback(hObject, eventdata, handles)
-global mImage;;
+global mImage;
 
 [name, path] = uigetfile( { '*.bmp; *.png; *.jpg'; '*.*' }, 'Open Image', '../res' );
 pathAndName = strcat( path, name );
