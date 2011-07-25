@@ -154,7 +154,7 @@ global mImage;
 global numColors;
 global vertexPrecent;
 
-ToPolys( mImage, numColors, vertexPrecent );
+ToPolys( mImage, numColors, vertexPrecent, true,'curves',5 );
 
 % Update handles structure
 guidata( hObject, handles );
