@@ -17,4 +17,4 @@ SHOW_INTERMEDIATES = 1;
 %%%%%%%%%%%%%%%%%
 %
 img = imread('../res/magicmushroom.png');
-ToPolys(img,4,5);
+ToPolys(img,4,10,true,'curves',5);
