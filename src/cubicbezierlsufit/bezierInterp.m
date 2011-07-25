@@ -16,7 +16,7 @@
 function Q=bezierInterp(P0,P1,P2,P3,varargin)
 
 %%% Default Values %%%
-t=linspace(0,1,101); % uniform parameterization 
+t=linspace(0,1,201); % uniform parameterization 
 defaultValues = {t};
 %%% Assign Valus %%%
 nonemptyIdx = ~cellfun('isempty',varargin);
