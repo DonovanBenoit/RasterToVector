@@ -16,5 +16,5 @@ global SHOW_INTERMEDIATES;
 SHOW_INTERMEDIATES = 1;
 %%%%%%%%%%%%%%%%%
 %
-img = imread('../res/ColoredStarsDigital.png');
+img = imread('../res/magicmushroom.png');
 ToPolys(img,4,5);
