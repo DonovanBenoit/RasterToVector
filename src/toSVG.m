@@ -41,23 +41,23 @@ else
         startC = paths{i,3};
         endC = paths{i,4};
         endP = paths{i,5};
-        [r, n] = size( startC );
-        j = 1;
-        while j <= n
-            fprintf( fid, 'C%i', startC( j ) );
-            fprintf( fid, ',%i ', startC( j + 1 ) );
-            fprintf( fid, '%i', endC( j ) );
-            fprintf( fid, ',%i ', endC( j + 1 ) );
-            fprintf( fid, '%i', endP( j ) );
-            if j == n - 1
-                fprintf( fid, ',%i"', endP( j + 1 ) );
+        [n, r] = size( startC );
+       
+        for j = 1: n
+            fprintf( fid, 'C%i', startC( j, 1 ) );
+            fprintf( fid, ',%i ', startC( j, 2 ) );
+            fprintf( fid, '%i', endC( j, 1  ) );
+            fprintf( fid, ',%i ', endC( j, 2 ) );
+            fprintf( fid, '%i', endP( j, 1 ) );
+            if j == n
+                fprintf( fid, ',%i"', endP( j, 2 ) );
             else
-                fprintf( fid, ',%i ', endP( j + 1 ) );
+                fprintf( fid, ',%i ', endP( j, 2 ) );
             end
-            j = j + 2;
+           
         end
         % Fill  
-        fprintf( fid, ' fill="none" stroke-width="1" stroke="rgb(%i,%i,%i)"/>\n', int32( paths{i,1} * 255 ) );
+        fprintf( fid, ' fill="rgb(%i,%i,%i)" stroke-width="1" stroke="rgb(%i,%i,%i)"/>\n', int32( paths{i,1} * 255 ), int32( paths{i,1} * 255 ) );
     end
     
     fprintf( fid, '</svg>\n' );
