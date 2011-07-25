@@ -144,8 +144,15 @@ guidata( hObject, handles );
 
 % --- Executes on button press in exportButton.
 function exportButton_Callback(hObject, eventdata, handles)
-fillColors = {'red','clear'};
+% Polygons
+fillColors = {'red','white'};
 strokeColors = {'lime','blue'};
 strokeWidths = {2,5};
 points = {[0, 0, 100, 0, 100, 100, 0, 100], [50, 0, 0, 50, 100, 50]};
-toSVG( fillColors, strokeColors, strokeWidths, points )
+% Curves
+cFillColors = {'green', 'orange'};
+startPoints = {[0,0], [45,90]};
+startControl = {[-200,0],[40,50]};
+endPoints = {[100, 100],[100,100]};
+endControl = {[-49,69], [34,65]};
+toSVG( fillColors, strokeColors, strokeWidths, points, cFillColors, startPoints, startControl, endPoints, endControl );

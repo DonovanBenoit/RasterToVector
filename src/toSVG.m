@@ -1,4 +1,4 @@
-function toSVG( fillColors, strokeColors, strokeWidths, points )
+function toSVG( fillColors, strokeColors, strokeWidths, points, pathColors, startPoints, startCPoints, endPoints, endCPoints )
 
 % Get File to Save
 [filename, pathname] = uiputfile( { '*.svg','Scalable Vector Graphics (*.svg)' }, 'Save figure as','../out');
@@ -18,9 +18,9 @@ else
     
     % Create Polygons
     [r, c] = size( points );
-    m = r * c
+    m = r * c;
     for i = 1:m
-        % Points
+        % Polygon Points
         p = points{ i };
         fprintf( fid, '<polygon points="' );
         j = 1;
@@ -40,8 +40,24 @@ else
         fprintf( fid, '"/>\n' );
     end
     
-    % Create Curves
-   
+    % Create Cubic Bezier Curves
+    [r, c] = size( startPoints );
+    m = r * c;
+    for i = 1:m     
+        % Path
+        fprintf( fid, '<path d="M' );  
+        fprintf( fid, '%i,%i ', startPoints{ i } );
+        fprintf( fid, 'C%i,%i ', startCPoints{ i } );
+        fprintf( fid, '%i,%i ', endCPoints{ i } );
+        fprintf( fid, '%i,%i"', endPoints{ i } );
+        % Fill  
+        fprintf( fid, ' fill="none" stroke-width="1" stroke="' );
+        fprintf( fid, pathColors{ i } );
+        % End
+        fprintf( fid, '"/>\n' );
+    end
+    
+    
     fprintf( fid, '</svg>\n' );
     
 % docNode = com.mathworks.xml.XMLUtils.createDocument( 'svg' ); 
