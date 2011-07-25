@@ -1,4 +1,4 @@
-function toSVG( fillColors, strokeColors, strokeWidths, points, pathColors, startPoints, startCPoints, endPoints, endCPoints )
+function toSVG( fillColors, strokeColors, strokeWidths, points, paths )
 
 % Get File to Save
 [filename, pathname] = uiputfile( { '*.svg','Scalable Vector Graphics (*.svg)' }, 'Save figure as','../out');
@@ -40,37 +40,33 @@ else
         fprintf( fid, '"/>\n' );
     end
     
-    % Create Cubic Bezier Curves
-    [r, c] = size( startPoints );
-    m = r * c;
+    % Paths
+    [m,c] = size( paths );
     for i = 1:m     
-        % Path
-        fprintf( fid, '<path d="M' );  
-        fprintf( fid, '%i,%i ', startPoints{ i } );
+        fprintf( fid, '<path d="M%i,', paths{i,2}(1,1) );  
+        fprintf( fid, '%i ', paths{i,2}(1,2) );
         
-        [r, c] = size( startCPoints{ i } );
-        n = r * c;
+        startC = paths{i,3};
+        endC = paths{i,4};
+        endP = paths{i,5};
+        [r, n] = size( startC );
         j = 1;
         while j <= n
-            fprintf( fid, 'C%i', startCPoints{ i }( j ) );
-            fprintf( fid, ',%i ', startCPoints{ i }( j + 1 ) );
-            fprintf( fid, '%i', endCPoints{ i }( j ) );
-            fprintf( fid, ',%i ', endCPoints{ i }( j + 1 ) );
-            fprintf( fid, '%i', endPoints{ i }( j ) );
+            fprintf( fid, 'C%i', startC( j ) );
+            fprintf( fid, ',%i ', startC( j + 1 ) );
+            fprintf( fid, '%i', endC( j ) );
+            fprintf( fid, ',%i ', endC( j + 1 ) );
+            fprintf( fid, '%i', endP( j ) );
             if j == n - 1
-                fprintf( fid, ',%i"', endPoints{ i }( j + 1 ) );
+                fprintf( fid, ',%i"', endP( j + 1 ) );
             else
-                fprintf( fid, ',%i ', endPoints{ i }( j + 1 ) );
+                fprintf( fid, ',%i ', endP( j + 1 ) );
             end
             j = j + 2;
         end
         % Fill  
-        fprintf( fid, ' fill="none" stroke-width="1" stroke="' );
-        fprintf( fid, pathColors{ i } );
-        % End
-        fprintf( fid, '"/>\n' );
+        fprintf( fid, ' fill="none" stroke-width="1" stroke="rgb(%i,%i,%i)"/>\n', int32( paths{i,1} * 255 ) );
     end
-    
     
     fprintf( fid, '</svg>\n' );
     

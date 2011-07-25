@@ -150,9 +150,13 @@ strokeColors = {'lime','blue'};
 strokeWidths = {2,5};
 points = {[0, 0, 100, 0, 100, 100, 0, 100], [50, 0, 0, 50, 100, 50]};
 % Curves
-cFillColors = {'green', 'orange'};
-startPoints = {[0,0], [45,90]};
-startControl = {[-200,0],[40,50,120,150]};
-endPoints = {[100, 100],[100,100,200,200]};
-endControl = {[-49,69], [34,65,143,124]};
-toSVG( fillColors, strokeColors, strokeWidths, points, cFillColors, startPoints, startControl, endPoints, endControl );
+paths = [{[1,0,1],[0,0,50,50],[10,10,78,95],[45,56,156,200],[50,50,100,100]};{[0.5,0.5,0.5],[45,90],[20,56],[43,67],[200,40]}];
+
+
+% [
+% {[r g b],startMatrix,Cont1Matrix,Cont2Matrix,endMatrix};
+% {[r g b],startMatrix,Cont1Matrix,Cont2Matrix,endMatrix};
+% {[r g b],startMatrix,Cont1Matrix,Cont2Matrix,endMatrix};
+% ]
+
+toSVG( fillColors, strokeColors, strokeWidths, points, paths );
