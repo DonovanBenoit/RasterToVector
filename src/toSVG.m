@@ -69,35 +69,8 @@ else
     end
     
     fprintf( fid, '</svg>\n' );
-    
-% docNode = com.mathworks.xml.XMLUtils.createDocument( 'svg' ); 
-% docRootNode = docNode.getDocumentElement; 
-% docRootNode.setAttribute( 'standalone', 'yes' );
-% 
-% %Create Node
-% polyNode = generatePolygon( docNode );
-% 
-% % Insert Data
-% %worldNode.appendChild( docNode.createTextNode( sprintf( '%s', 'Hello World!' ) ) );
-% 
-% % Position Nodes
-% %helloNode.appendChild( worldNode );
-% %docRootNode.appendChild( helloNode );
-% docRootNode.appendChild( polyNode );
-
-
-
-
-
-    
-   % xmlwrite( file, docNode ); 
-   
-   %fprintf( fid, '<?xml version="1.0" standalone="yes"?> \n <!DOCTYPE svg PUBLIC "raster to vector" "scott & donovan">' );
-%                  '<svg width="100%" height="100%" version="1.1"> \n', ...
-%                  '<circle cx="100" cy="50" r="40" stroke="black"stroke-width="2" fill="red"/> \n', ...
-%                  '<rect x="0.5cm" y="0.5cm" width="2cm" height="1cm"/> \n', ...
-%                  '</svg>' );
-   edit( file ); 
+    % Open the file for viewing
+    edit( file ); 
 end
 end
 

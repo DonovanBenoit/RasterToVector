@@ -22,7 +22,7 @@ function varargout = toPoly(varargin)
 
 % Edit the above text to modify the response to help toPoly
 
-% Last Modified by GUIDE v2.5 24-Jul-2011 15:22:07
+% Last Modified by GUIDE v2.5 25-Jul-2011 11:36:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,6 +67,8 @@ global vertexPrecent;
 vertexPrecent = str2double( get( handles.vertexPrecent, 'String' ) );
 global numColors;
 numColors = str2double( get( handles.numColors, 'String' ) );
+global mShowSteps;
+mShowSteps = 1.0;
 
 % Update handles structure
 guidata( hObject, handles );
@@ -88,15 +90,12 @@ imshow( mImage, 'Parent', handles.axes1 );
 global mBackup;
 mBackup = mImage;
 % Update handles structure
-guidata( hObject, handles );
+guidata( handles.axes1, handles );
 
-% --- Executes on button press in checkbox1.
-function checkbox1_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox1
+% --- Executes on button press in showSteps.
+function showSteps_Callback(hObject, eventdata, handles)
+global mShowSteps;
+mShowSteps = get( hObject,'Value' );
 
 
 
@@ -153,12 +152,13 @@ function polygonalize_Callback( hObject, eventdata, handles )
 global mImage;
 global numColors;
 global vertexPrecent;
+global mShowSteps;
 
-ToPolys( mImage, numColors, vertexPrecent, true,'curves',5 );
+ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'curves', 5 );
 
 % Update handles structure
 guidata( hObject, handles );
 
-% --- Executes on button press in applyButton.
-function applyButton_Callback(hObject, eventdata, handles)
-%dosent do anything 
+% --- Executes on button press in exportButton.
+function exportButton_Callback( hObject, eventdata, handles )
+toSVG( [], [], [], [], [] );
