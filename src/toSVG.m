@@ -1,4 +1,4 @@
-function toSVG( fillColors, strokeColors, strokeWidths, points )
+function toSVG( fillColors, strokeColors, strokeWidths, points, pathColors, startPoints, startCPoints, endPoints, endCPoints )
 
 % Get File to Save
 [filename, pathname] = uiputfile( { '*.svg','Scalable Vector Graphics (*.svg)' }, 'Save figure as','../out');
@@ -17,26 +17,61 @@ else
     fprintf( fid, '<svg width="100%%" height="100%%" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' );
     
     % Create Polygons
-    [m,n] = size( points );
+    [r, c] = size( points );
+    m = r * c;
     for i = 1:m
-        % Points
+        % Polygon Points
+        p = points{ i };
         fprintf( fid, '<polygon points="' );
         j = 1;
+        [r, c] = size( p );
+        n = r * c;
         while j <= n
-            fprintf( fid, '%i,%i ', points( i, j ), points( i, j + 1 ) );
+            fprintf( fid, '%i,%i ', p( j ), p( j + 1 ) );
             j = j + 2;
         end
         % Fill  
         fprintf( fid, '" fill="' );
-        fprintf( fid, fillColors( i, : ) );
+        fprintf( fid, fillColors{ i } );
+        % Stroke
         fprintf( fid, '" stroke="' );
-        fprintf( fid, strokeColors( i, : ) );
-        fprintf( fid, '" stroke-width="%i', strokeWidths( i ) );
+        fprintf( fid, strokeColors{ i } );
+        fprintf( fid, '" stroke-width="%i', strokeWidths{ i } );
         fprintf( fid, '"/>\n' );
     end
     
-    % Create Curves
-   
+    % Create Cubic Bezier Curves
+    [r, c] = size( startPoints );
+    m = r * c;
+    for i = 1:m     
+        % Path
+        fprintf( fid, '<path d="M' );  
+        fprintf( fid, '%i,%i ', startPoints{ i } );
+        
+        [r, c] = size( startCPoints{ i } );
+        n = r * c;
+        j = 1;
+        while j <= n
+            fprintf( fid, 'C%i', startCPoints{ i }( j ) );
+            fprintf( fid, ',%i ', startCPoints{ i }( j + 1 ) );
+            fprintf( fid, '%i', endCPoints{ i }( j ) );
+            fprintf( fid, ',%i ', endCPoints{ i }( j + 1 ) );
+            fprintf( fid, '%i', endPoints{ i }( j ) );
+            if j == n - 1
+                fprintf( fid, ',%i"', endPoints{ i }( j + 1 ) );
+            else
+                fprintf( fid, ',%i ', endPoints{ i }( j + 1 ) );
+            end
+            j = j + 2;
+        end
+        % Fill  
+        fprintf( fid, ' fill="none" stroke-width="1" stroke="' );
+        fprintf( fid, pathColors{ i } );
+        % End
+        fprintf( fid, '"/>\n' );
+    end
+    
+    
     fprintf( fid, '</svg>\n' );
     
 % docNode = com.mathworks.xml.XMLUtils.createDocument( 'svg' ); 
