@@ -22,7 +22,7 @@ function varargout = toPoly(varargin)
 
 % Edit the above text to modify the response to help toPoly
 
-% Last Modified by GUIDE v2.5 25-Jul-2011 11:36:53
+% Last Modified by GUIDE v2.5 25-Jul-2011 12:51:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,9 +64,11 @@ handles.setImage = @setLineImage;
 % Initialize global variables
 % Precentage of verticies to keep
 global vertexPrecent;
-vertexPrecent = str2double( get( handles.vertexPrecent, 'String' ) );
+vertexPrecent = str2double( get( handles.vertexPrecentage, 'String' ) );
 global numColors;
 numColors = str2double( get( handles.numColors, 'String' ) );
+global maxSquareError;
+maxSquareError = str2double( get( handles.maxError, 'String' ) );
 global mShowSteps;
 mShowSteps = 1.0;
 
@@ -93,11 +95,9 @@ mBackup = mImage;
 guidata( handles.axes1, handles );
 
 % --- Executes on button press in showSteps.
-function showSteps_Callback(hObject, eventdata, handles)
+function showSteps_Callback( hObject, eventdata, handles )
 global mShowSteps;
 mShowSteps = get( hObject,'Value' );
-
-
 
 function numColors_Callback( hObject, eventdata, handles )
 global numColors;
@@ -114,7 +114,7 @@ end
 % Update handles structure
 guidata( hObject, handles );
 
-function vertexPrecent_Callback(hObject, eventdata, handles)
+function vertexPrecentage_Callback(hObject, eventdata, handles)
 global vertexPrecent;
 
 v = str2double( get( hObject, 'String' ) );
@@ -129,20 +129,39 @@ end
 % Update handles structure
 guidata( hObject, handles );
 
+
+function maxError_Callback(hObject, eventdata, handles)
+global maxSquareError;
+
+e = str2double( get( hObject, 'String' ) );
+if isnan( e ) || ~isreal( e ) 
+    % Restore original value
+    set( hObject, 'String', maxSquareError );
+else 
+    maxSquareError = e;
+    set( hObject, 'String', maxSquareError );
+end
+
+% Update handles structure
+guidata( hObject, handles );
+
 % --- Executes on button press in resetButton.
 function resetButton_Callback( hObject, eventdata, handles )
 global mBackup;
 global mImage;
 global numColors;
 global vertexPrecent;
+global maxSquareError;
 
 mImage = mBackup;
 imshow( mImage, 'Parent', handles.axes1 );
 
 numColors = 5;
 vertexPrecent = 10;
+maxSquareError = 5;
 set( handles.numColors, 'String', numColors );
-set( handles.vertexPrecent, 'String', vertexPrecent );
+set( handles.vertexPrecentage, 'String', vertexPrecent );
+set( handles.maxError, 'String', maxSquareError );
 
 % Update handles structure
 guidata( hObject, handles );
@@ -153,8 +172,13 @@ global mImage;
 global numColors;
 global vertexPrecent;
 global mShowSteps;
+global maxSquareError;
 
-ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'curves', 5 );
+if get( handles.polyMode, 'Value' )
+    ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError );
+elseif get( handles.curveMode, 'Value' );
+    ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError );
+end
 
 % Update handles structure
 guidata( hObject, handles );
