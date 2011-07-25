@@ -184,7 +184,7 @@ global mShowSteps;
 global maxSquareError;
 
 if get( handles.polyMode, 'Value' )
-    ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError );
+    mPolys = ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError );
 elseif get( handles.curveMode, 'Value' );
     mCurves = ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError );
 end
@@ -195,8 +195,8 @@ guidata( hObject, handles );
 % --- Executes on button press in exportButton.
 function exportButton_Callback( hObject, eventdata, handles )
 global mCurves;
-toSVG( [], [], [], [], mCurves );
-
+global mPolys;
+toSVG( mPolys, mCurves );
 
 % --- Executes on button press in lineButton.
 function lineButton_Callback(hObject, eventdata, handles)
@@ -207,7 +207,6 @@ linesHandle = guidata( lines );
 linesHandle.setImage( linesHandle, mImage );
 % Update handles structure
 guidata( hObject, handles );
-
 
 % --- Executes on button press in openButton.
 function openButton_Callback(hObject, eventdata, handles)

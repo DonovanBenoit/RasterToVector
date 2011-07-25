@@ -1,4 +1,4 @@
-function toSVG( fillColors, strokeColors, strokeWidths, points, paths )
+function toSVG( polys, paths )
 
 % Get File to Save
 [filename, pathname] = uiputfile( { '*.svg','Scalable Vector Graphics (*.svg)' }, 'Save figure as','../out');
@@ -16,31 +16,23 @@ else
     % SVG Code
     fprintf( fid, '<svg width="100%%" height="100%%" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' );
     
-    % Create Polygons
-    [r, c] = size( points );
-    m = r * c;
+    % Polygons
+    [m,c] = size( polys );
     for i = 1:m
-        % Polygon Points
-        p = points{ i };
         fprintf( fid, '<polygon points="' );
-        j = 1;
-        [r, c] = size( p );
-        n = r * c;
-        while j <= n
-            fprintf( fid, '%i,%i ', p( j ), p( j + 1 ) );
-            j = j + 2;
+        [n, c] = size( polys{i,2} );
+        for j = 1:n
+            if j == n  % last point
+                fprintf( fid, '%i,%i"', polys{i,2}(j,1), polys{i,2}(j,2) );
+            else
+                fprintf( fid, '%i,%i ', polys{i,2}(j,1), polys{i,2}(j,2) );
+            end
         end
         % Fill  
-        fprintf( fid, '" fill="' );
-        fprintf( fid, fillColors{ i } );
-        % Stroke
-        fprintf( fid, '" stroke="' );
-        fprintf( fid, strokeColors{ i } );
-        fprintf( fid, '" stroke-width="%i', strokeWidths{ i } );
-        fprintf( fid, '"/>\n' );
+        fprintf( fid, ' fill="rgb(%i,%i,%i)" stroke-width="1" stroke="rgb(%i,%i,%i)"/>\n', int32( polys{i,1} * 255 ), [0,0,0] );
     end
     
-    % Paths
+    % Curves
     [m,c] = size( paths );
     for i = 1:m     
         fprintf( fid, '<path d="M%i,', paths{i,2}(1,1) );  
