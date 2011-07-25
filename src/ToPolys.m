@@ -128,7 +128,7 @@ while(shapesDrawn < totalShapes)
     % POLYGON MODE: Just return the color of each polygon and a list of its
     % vertices
     if strcmp(mode,'polys')
-        polyVertices = [layers{maxPerimeterI}{maxPerimeterK}(:,2), -layers{maxPerimeterI}{maxPerimeterK}(:,1)];
+        polyVertices = [layers{maxPerimeterI}{maxPerimeterK}(:,2), layers{maxPerimeterI}{maxPerimeterK}(:,1)];
         returnData = [returnData; {map(maxPerimeterI,:), polyVertices}];
     end
         
@@ -147,6 +147,7 @@ while(shapesDrawn < totalShapes)
             hold off
         end
         
+        p0mat = abs(p0mat);
         returnData = [returnData; {map(maxPerimeterI,:),p0mat,p1mat,p2mat,p3mat}];
     end
     
