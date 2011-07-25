@@ -47,9 +47,23 @@ else
         % Path
         fprintf( fid, '<path d="M' );  
         fprintf( fid, '%i,%i ', startPoints{ i } );
-        fprintf( fid, 'C%i,%i ', startCPoints{ i } );
-        fprintf( fid, '%i,%i ', endCPoints{ i } );
-        fprintf( fid, '%i,%i"', endPoints{ i } );
+        
+        [r, c] = size( startCPoints{ i } );
+        n = r * c;
+        j = 1;
+        while j <= n
+            fprintf( fid, 'C%i', startCPoints{ i }( j ) );
+            fprintf( fid, ',%i ', startCPoints{ i }( j + 1 ) );
+            fprintf( fid, '%i', endCPoints{ i }( j ) );
+            fprintf( fid, ',%i ', endCPoints{ i }( j + 1 ) );
+            fprintf( fid, '%i', endPoints{ i }( j ) );
+            if j == n - 1
+                fprintf( fid, ',%i"', endPoints{ i }( j + 1 ) );
+            else
+                fprintf( fid, ',%i ', endPoints{ i }( j + 1 ) );
+            end
+            j = j + 2;
+        end
         % Fill  
         fprintf( fid, ' fill="none" stroke-width="1" stroke="' );
         fprintf( fid, pathColors{ i } );
