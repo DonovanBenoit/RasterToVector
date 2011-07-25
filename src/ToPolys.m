@@ -1,4 +1,4 @@
-function [ output_args ] = ToPolys( img, nColors, vertexResolution )
+function [ bezierPaths polygons ] = ToPolys( img, nColors, vertexResolution )
 %TOPOLYS Convert a color image to a group of colored polygons
 %   !!!Detailed explanation goes here
 
@@ -83,8 +83,10 @@ axis off;
 hold on;
 
 
-% Initialize shapes drawn variable
+% Initialize variables
 shapesDrawn = 0;
+bezierPaths = [];
+polygons = [];
 
 % Start drawing shapes, drawing those with the largest perimeter first
 while(shapesDrawn < totalShapes)
@@ -108,14 +110,41 @@ while(shapesDrawn < totalShapes)
     
     % Paint shape as a patch
     p = patch(layers{maxPerimeterI}{maxPerimeterK}(:,2),-layers{maxPerimeterI}{maxPerimeterK}(:,1),1);
+
+    % MATLAB spline fitting
+    %t = 1:size(layers{maxPerimeterI}{maxPerimeterK}(:,2));
+    %ts = 1:1/100:size(layers{maxPerimeterI}{maxPerimeterK}(:,2));
+    %xs = spline(t,layers{maxPerimeterI}{maxPerimeterK}(:,2),ts);
+    %ys = spline(t,-layers{maxPerimeterI}{maxPerimeterK}(:,1),ts);
+    %disp(xs)
+    %disp(ys)
+    %hold on;
+    %plot(xs,ys, 'r')
+    %hold off;
+    %pause
     
-    % Remove shape that was just painted
+    % Cubic bezier curve fitting
+    % Need at least 4 points to do fit
+    if size(layers{maxPerimeterI}{maxPerimeterK}(:,2),1)>=4
+        points = [layers{maxPerimeterI}{maxPerimeterK}(:,2), -layers{maxPerimeterI}{maxPerimeterK}(:,1)];
+        [p0mat,p1mat,p2mat,p3mat,fbi,MxSqD] = bzapproxu(points);
+        [MatI]=BezierInterpCPMatSegVec(p0mat,p1mat,p2mat,p3mat,fbi);
+
+        hold on
+        plot2d_bz_org_intrp_cp(points,MatI,p0mat,p1mat,p2mat,p3mat);
+        hold off
+        
+        pause
+        
+        bezierPaths = [bezierPaths; {map(maxPerimeterI,:),p0mat,p1mat,p2mat,p3mat}];
+    end
+    
+    % Remove shape that was just painted from layers
     layers{maxPerimeterI}{maxPerimeterK} = [];
     
     % Set patch edge and face color
     set(p,'FaceColor',[map(maxPerimeterI,:)]);
     set(p,'EdgeColor','none');
-    %plot(layers{2}{2}(:,2),-layers{2}{2}(:,1),'*')
     
     shapesDrawn = shapesDrawn + 1;
 end
