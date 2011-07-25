@@ -22,7 +22,7 @@ function varargout = toPoly(varargin)
 
 % Edit the above text to modify the response to help toPoly
 
-% Last Modified by GUIDE v2.5 25-Jul-2011 12:51:02
+% Last Modified by GUIDE v2.5 25-Jul-2011 13:10:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -71,6 +71,9 @@ global maxSquareError;
 maxSquareError = str2double( get( handles.maxError, 'String' ) );
 global mShowSteps;
 mShowSteps = 1.0;
+global mImage;
+mImage = zeros( 256, 256 );
+imshow( mImage, 'Parent', handles.axes1 );
 
 % Update handles structure
 guidata( hObject, handles );
@@ -186,3 +189,28 @@ guidata( hObject, handles );
 % --- Executes on button press in exportButton.
 function exportButton_Callback( hObject, eventdata, handles )
 toSVG( [], [], [], [], [] );
+
+
+% --- Executes on button press in lineButton.
+function lineButton_Callback(hObject, eventdata, handles)
+global mImage;
+
+lines = linesGui( 'Lines', hObject );
+linesHandle = guidata( lines );
+linesHandle.setImage( linesHandle, mImage );
+% Update handles structure
+guidata( hObject, handles );
+
+
+% --- Executes on button press in openButton.
+function openButton_Callback(hObject, eventdata, handles)
+global mImage;;
+
+[name, path] = uigetfile( { '*.bmp; *.png; *.jpg'; '*.*' }, 'Open Image', '../res' );
+pathAndName = strcat( path, name );
+if( ( length( name ) ~= 1 ) && ( length( path ) ~= 1 ) );
+    mImage = imread( pathAndName );
+    imshow( mImage, 'Parent', handles.axes1 );
+end;
+% Update handles structure
+guidata( hObject, handles );
