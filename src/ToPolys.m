@@ -137,7 +137,9 @@ while(shapesDrawn < totalShapes)
     % of its breakpoints and control points.
     % Need at least 4 points to do fit.
     if strcmp(mode,'curves') && size(layers{maxPerimeterI}{maxPerimeterK}(:,2),1)>=4
-        points = [layers{maxPerimeterI}{maxPerimeterK}(:,2), -layers{maxPerimeterI}{maxPerimeterK}(:,1)];
+        points = [layers{maxPerimeterI}{maxPerimeterK}(:,2),-layers{maxPerimeterI}{maxPerimeterK}(:,1)];
+        points = vertcat(points,points(1,:)); % Close shape to start point
+ 
         [p0mat,p1mat,p2mat,p3mat,fbi,MxSqD] = bzapproxu(points, maxSquareDist);
         [MatI]=BezierInterpCPMatSegVec(p0mat,p1mat,p2mat,p3mat,fbi);
 
@@ -147,7 +149,12 @@ while(shapesDrawn < totalShapes)
             hold off
         end
         
+        % Convert y values to be positive instead of negative
         p0mat = abs(p0mat);
+        p1mat = abs(p1mat);
+        p2mat = abs(p2mat);
+        p3mat = abs(p3mat);
+        
         returnData = [returnData; {map(maxPerimeterI,:),p0mat,p1mat,p2mat,p3mat}];
     end
     
