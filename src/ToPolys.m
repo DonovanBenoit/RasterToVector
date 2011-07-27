@@ -84,20 +84,22 @@ polygons = [];
 
 % Start drawing shapes, drawing those with the largest perimeter first
 while(shapesDrawn < totalShapes)
-    maxPerimiter = 0;
-    maxPerimeterI = 0;
-    maxPerimeterK = 0;
+    maxArea = 0;
+    maxAreaI = 0;
+    maxAreaK = 0;
     
     for i=1:nColors
         % Find number of shapes in layer.
         shapesInLayer = size(layers{i},1);
-
+        
         % Find next max perimeter shape to draw
         for k=1:shapesInLayer
-            if( size(layers{i}{k},1) > maxPerimiter)
-                maxPerimeterI = i;
-                maxPerimeterK = k;
-                maxPerimiter = size(layers{i}{k},1);
+            if size( layers{i}{k} > 1 )
+                if( polyarea( layers{i}{k}(:,2), layers{i}{k}(:,1) ) > maxArea)
+                    maxAreaI = i;
+                    maxAreaK = k;
+                    maxArea = polyarea( layers{i}{k}(:,2), layers{i}{k}(:,1) );
+                end
             end
         end
     end
@@ -106,18 +108,18 @@ while(shapesDrawn < totalShapes)
         pause;
         
         % Paint shape as a patch
-        p = patch(layers{maxPerimeterI}{maxPerimeterK}(:,2),-layers{maxPerimeterI}{maxPerimeterK}(:,1),1);
+        p = patch(layers{maxAreaI}{maxAreaK}(:,2),-layers{maxAreaI}{maxAreaK}(:,1),1);
         
         % Set patch edge and face color
-        set(p,'FaceColor',[map(maxPerimeterI,:)]);
+        set(p,'FaceColor',[map(maxAreaI,:)]);
         set(p,'EdgeColor','none');
     end
         
     % MATLAB spline fitting
-    %t = 1:size(layers{maxPerimeterI}{maxPerimeterK}(:,2));
-    %ts = 1:1/100:size(layers{maxPerimeterI}{maxPerimeterK}(:,2));
-    %xs = spline(t,layers{maxPerimeterI}{maxPerimeterK}(:,2),ts);
-    %ys = spline(t,-layers{maxPerimeterI}{maxPerimeterK}(:,1),ts);
+    %t = 1:size(layers{maxAreaI}{maxAreaK}(:,2));
+    %ts = 1:1/100:size(layers{maxAreaI}{maxAreaK}(:,2));
+    %xs = spline(t,layers{maxAreaI}{maxAreaK}(:,2),ts);
+    %ys = spline(t,-layers{maxAreaI}{maxAreaK}(:,1),ts);
     %disp(xs)
     %disp(ys)
     %hold on;
@@ -128,16 +130,16 @@ while(shapesDrawn < totalShapes)
     % POLYGON MODE: Just return the color of each polygon and a list of its
     % vertices
     if strcmp(mode,'polys')
-        polyVertices = [layers{maxPerimeterI}{maxPerimeterK}(:,2), layers{maxPerimeterI}{maxPerimeterK}(:,1)];
-        returnData = [returnData; {map(maxPerimeterI,:), polyVertices}];
+        polyVertices = [layers{maxAreaI}{maxAreaK}(:,2), layers{maxAreaI}{maxAreaK}(:,1)];
+        returnData = [returnData; {map(maxAreaI,:), polyVertices}];
     end
         
     
     % BEZIER CURVE MODE: Return color of bezier curve path as well as all
     % of its breakpoints and control points.
     % Need at least 4 points to do fit.
-    if strcmp(mode,'curves') && size(layers{maxPerimeterI}{maxPerimeterK}(:,2),1)>=4
-        points = [layers{maxPerimeterI}{maxPerimeterK}(:,2),-layers{maxPerimeterI}{maxPerimeterK}(:,1)];
+    if strcmp(mode,'curves') && size(layers{maxAreaI}{maxAreaK}(:,2),1)>=4
+        points = [layers{maxAreaI}{maxAreaK}(:,2),-layers{maxAreaI}{maxAreaK}(:,1)];
         points = vertcat(points,points(1,:)); % Close shape to start point
  
         [p0mat,p1mat,p2mat,p3mat,fbi,MxSqD] = bzapproxu(points, maxSquareDist);
@@ -155,11 +157,11 @@ while(shapesDrawn < totalShapes)
         p2mat = abs(p2mat);
         p3mat = abs(p3mat);
         
-        returnData = [returnData; {map(maxPerimeterI,:),p0mat,p1mat,p2mat,p3mat}];
+        returnData = [returnData; {map(maxAreaI,:),p0mat,p1mat,p2mat,p3mat}];
     end
     
     % Remove shape that was just painted from layers
-    layers{maxPerimeterI}{maxPerimeterK} = [];
+    layers{maxAreaI}{maxAreaK} = [];
     
     shapesDrawn = shapesDrawn + 1;
 end
