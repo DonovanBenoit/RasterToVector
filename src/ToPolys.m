@@ -94,7 +94,7 @@ while(shapesDrawn < totalShapes)
         
         % Find next max perimeter shape to draw
         for k=1:shapesInLayer
-            if size( layers{i}{k} > 1 )
+            if size( layers{i}{k} ) > 0
                 if( polyarea( layers{i}{k}(:,2), layers{i}{k}(:,1) ) > maxArea)
                     maxAreaI = i;
                     maxAreaK = k;
@@ -103,8 +103,10 @@ while(shapesDrawn < totalShapes)
             end
         end
     end
+    
+    %if( maxAreaI && maxAreaK )
 
-    if(showIntermediates)
+    if( showIntermediates && maxAreaI && maxAreaK )
         pause;
         
         % Paint shape as a patch
@@ -129,7 +131,7 @@ while(shapesDrawn < totalShapes)
     
     % POLYGON MODE: Just return the color of each polygon and a list of its
     % vertices
-    if strcmp(mode,'polys')
+    if strcmp( mode, 'polys' ) && maxAreaI && maxAreaK
         polyVertices = [layers{maxAreaI}{maxAreaK}(:,2), layers{maxAreaI}{maxAreaK}(:,1)];
         returnData = [returnData; {map(maxAreaI,:), polyVertices}];
     end
@@ -138,7 +140,7 @@ while(shapesDrawn < totalShapes)
     % BEZIER CURVE MODE: Return color of bezier curve path as well as all
     % of its breakpoints and control points.
     % Need at least 4 points to do fit.
-    if strcmp(mode,'curves') && size(layers{maxAreaI}{maxAreaK}(:,2),1)>=4
+    if strcmp(mode,'curves') && maxAreaI && maxAreaK && size(layers{maxAreaI}{maxAreaK}(:,2),1)>=4
         points = [layers{maxAreaI}{maxAreaK}(:,2),-layers{maxAreaI}{maxAreaK}(:,1)];
         points = vertcat(points,points(1,:)); % Close shape to start point
  
@@ -161,8 +163,12 @@ while(shapesDrawn < totalShapes)
     end
     
     % Remove shape that was just painted from layers
+    if maxAreaI && maxAreaK
     layers{maxAreaI}{maxAreaK} = [];
+    end
     
+    %end
     shapesDrawn = shapesDrawn + 1;
+    
 end
     
