@@ -185,8 +185,10 @@ global maxSquareError;
 
 if get( handles.polyMode, 'Value' )
     mPolys = ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError );
+    mCurves = [];
 elseif get( handles.curveMode, 'Value' );
     mCurves = ToPolys( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError );
+    mPolys = [];
 end
 
 % Update handles structure
