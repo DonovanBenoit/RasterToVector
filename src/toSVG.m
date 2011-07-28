@@ -29,7 +29,7 @@ else
             end
         end
         % Fill  
-        fprintf( fid, ' fill="rgb(%i,%i,%i)" stroke-width="1" stroke="rgb(%i,%i,%i)"/>\n', int32( polys{i,1} * 255 ), [0,0,0] );
+        fprintf( fid, ' fill="rgb(%i,%i,%i)" stroke-width="1" stroke="none"/>\n', int32( polys{i,1} * 255 ) );
     end
     
     % Curves
