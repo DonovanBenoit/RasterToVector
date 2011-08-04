@@ -1,8 +1,13 @@
+DIRECTORY
+ - src - Contains source files
+ - res - Contains sample images
+ - out - The default directory to save the exported images
+
 APPLICATION
  - Contained in toVector.m, and toVector.fig
  - Open
    - The Open button creates a file dialog to select which image to open.
- - Export
+ - Export to SVG
    - The Export button invokes the toSVG script with the current model.
  - Vectorize
    - Invokes the toVector function.
@@ -13,13 +18,16 @@ APPLICATION
  - Mode
    - Set the type of vector conversion to preform
      - Polygons
-     - Curves
+     - Beziergons
  - Parmeters
    - Num of Colors - The number of colors to simplify the image to.
    - % Verticies to keep - The precentage of verticies to keep during the vectorization process.
    - Max Square Error - The max square error to be used during vectorization.
 
 VECTORIZATION
+ - Contained in toVector.m
+ - The GUI will pause between steps if the 
+ - A popup will apear after completion
 
 LINES
  - The linesGUI.m file contains the implementation of Hough line detection
