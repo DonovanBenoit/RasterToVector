@@ -1,0 +1,35 @@
+APPLICATION
+ - Contained in toVector.m, and toVector.fig
+ - Open
+   - The Open button creates a file dialog to select which image to open.
+ - Export
+   - The Export button invokes the toSVG script with the current model.
+ - Vectorize
+   - Invokes the toVector function.
+ - Find Lines
+   - Launch the linesGUI with the open image.
+ - Reset
+   - Reset the state of the GUI.
+ - Mode
+   - Set the type of vector conversion to preform
+     - Polygons
+     - Curves
+ - Parmeters
+   - Num of Colors - The number of colors to simplify the image to.
+   - % Verticies to keep - The precentage of verticies to keep during the vectorization process.
+   - Max Square Error - The max square error to be used during vectorization.
+
+VECTORIZATION
+
+LINES
+ - The linesGUI.m file contains the implementation of Hough line detection
+ - This was kept separate from the vectorization implmentation as it produced disapointing results
+ - The GUI lets the user modify the parameters used in the line detection process
+   - The Gap Fill parameter sets the max gap disstance to fill
+   - The Min Length parameter sets the minimum length of line to keep
+ - The showsteps checkbox sets weather to show intermediate steps in the line detection process
+
+EXPORT
+ - The export method opens a file dialog to allow the user to specify the path and filename.
+ - Once the export is complete the file is opened for editing by matlab.
+
