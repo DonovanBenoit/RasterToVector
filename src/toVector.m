@@ -7,7 +7,7 @@ function [ returnData ] = toVector( img, nColors, percTracePointsToKeep, showInt
 
 if showIntermediates
     % Show reduced color image
-    set(figure(2), 'Position', [50, 50, 800, 400],...
+    set(figure(1), 'Position', [50, 50, 800, 400],...
                    'Name', 'Reduced colour raster image',...
                    'Color','black',...
                    'Toolbar', 'none',...
@@ -60,8 +60,8 @@ end
 
 
 % Set up figure to draw polygons on
-if showIntermediates
-    set(figure(4), 'Position', [50, 50, size(img2,2), size(img2,1)],...
+    close(figure(2));
+    set(figure(2), 'Position', [50, 50, size(img2,2), size(img2,1)],...
                    'Name', 'Vector Image',...
                    'Toolbar', 'none',...
                    'Color','black',...
@@ -70,11 +70,6 @@ if showIntermediates
      axis image;
      axis off;
      hold on;
-else
-    %subplot(1,2,2);
-end
-
-
 
 
 % Initialize variables
@@ -108,16 +103,17 @@ while(shapesDrawn < totalShapes)
 
     if( showIntermediates && maxAreaI && maxAreaK )
         pause;
-        
-        % Paint shape as a patch
-        p = patch(layers{maxAreaI}{maxAreaK}(:,2),-layers{maxAreaI}{maxAreaK}(:,1),1);
-        
-        % Set patch edge and face color
-        set(p,'FaceColor',[map(maxAreaI,:)]);
-        set(p,'EdgeColor','none');
     end
         
-    % MATLAB spline fitting
+    % Paint shape as a patch
+    p = patch(layers{maxAreaI}{maxAreaK}(:,2),-layers{maxAreaI}{maxAreaK}(:,1),1);
+
+    % Set patch edge and face color
+    set(p,'FaceColor',[map(maxAreaI,:)]);
+    set(p,'EdgeColor','none');
+
+        
+    % MATLAB spline fitting (Unused, used library instead)
     %t = 1:size(layers{maxAreaI}{maxAreaK}(:,2));
     %ts = 1:1/100:size(layers{maxAreaI}{maxAreaK}(:,2));
     %xs = spline(t,layers{maxAreaI}{maxAreaK}(:,2),ts);
@@ -147,12 +143,10 @@ while(shapesDrawn < totalShapes)
         [p0mat,p1mat,p2mat,p3mat,fbi,MxSqD] = bzapproxu(points, maxSquareDist);
         [MatI]=BezierInterpCPMatSegVec(p0mat,p1mat,p2mat,p3mat,fbi);
 
-        if(showIntermediates)
-            hold on
-            plot2d_bz_org_intrp_cp(points,MatI,p0mat,p1mat,p2mat,p3mat);
-            hold off
-        end
-        
+        hold on
+        plot2d_bz_org_intrp_cp(points,MatI,p0mat,p1mat,p2mat,p3mat);
+        hold off
+
         % Convert y values to be positive instead of negative
         p0mat = abs(p0mat);
         p1mat = abs(p1mat);
@@ -171,4 +165,6 @@ while(shapesDrawn < totalShapes)
     shapesDrawn = shapesDrawn + 1;
     
 end
+
+msgbox('Vectorization process complete. Click "Export to SVG" to export vector image.','Vectorization Complete');
     
