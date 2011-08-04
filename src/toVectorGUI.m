@@ -194,10 +194,10 @@ global vertexPrecent;
 global mShowSteps;
 global maxSquareError;
 if get( handles.polyMode, 'Value' )
-    mPolys = toVector( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError );
+    mPolys = toVector( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError, handles.axes1 );
     mCurves = [];
 elseif get( handles.curveMode, 'Value' );
-    mCurves = toVector( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError );
+    mCurves = toVector( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError, handles.axes1 );
     mPolys = [];
 end
 % Update handles structure

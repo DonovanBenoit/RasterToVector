@@ -1,4 +1,4 @@
-function [ returnData ] = toVector( img, nColors, percTracePointsToKeep, showIntermediates, mode, maxSquareDist )
+function [ returnData ] = toVector( img, nColors, percTracePointsToKeep, showIntermediates, mode, maxSquareDist, axes )
 %TOVECTOR Convert a color image to a group of colored polygons
 %   !!!Detailed explanation goes here
 
