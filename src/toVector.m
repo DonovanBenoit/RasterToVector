@@ -26,10 +26,10 @@ totalShapes = 0;
 for i=1:nColors
     
     % Fill holes (This sometimes removes image details, best not to do)
-    layers{i} = imfill(layers{i},'holes');
+    %layers{i} = imfill(layers{i},'holes');
     
     % Trace the contour of colored blobs
-    layers{i} = bwboundaries(layers{i});
+    layers{i} = bwboundaries(layers{i},8,'noholes');
 
     % Find number of shapes in layer and increment total shapes
     shapesInLayer = size(layers{i},1);
