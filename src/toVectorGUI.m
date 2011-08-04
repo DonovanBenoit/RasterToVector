@@ -1,3 +1,11 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Function: print
+% File: toVectorGUI.m
+% Description: Prints a string to the MATLAB console if printing is
+% enabled.
+% Created: June 20, 2011
+% Authors: Scott Stevenson & Donovan Benoit
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function varargout = toVectorGUI(varargin)
 % TOVECTORGUI MATLAB code for toVectorGUI.fig
 %      TOVECTORGUI, by itself, creates a new TOVECTORGUI or raises the existing
