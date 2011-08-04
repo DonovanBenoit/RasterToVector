@@ -65,17 +65,23 @@ handles.setImage = @setLineImage;
 % Precentage of verticies to keep
 global vertexPrecent;
 vertexPrecent = str2double( get( handles.vertexPrecentage, 'String' ) );
+% Number of colors to simplify the image to
 global numColors;
 numColors = str2double( get( handles.numColors, 'String' ) );
+% The max squared error for the conversion process
 global maxSquareError;
 maxSquareError = str2double( get( handles.maxError, 'String' ) );
+% Flag to show steps in conversion process
 global mShowSteps;
 mShowSteps = 1.0;
+% The image to convert
 global mImage;
 mImage = zeros( 256, 256 );
 imshow( mImage, 'Parent', handles.axes1 );
+% Data structure to hold the curves model
 global mCurves;
 mCurves = [];
+% Data structure to hold the polygon model
 global mPolys;
 mPolys = [];
 
@@ -92,6 +98,7 @@ function varargout = toVectorGUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+% Set the image to use
 function setLineImage( handles, image )
 global mImage;
 mImage = image;
@@ -101,14 +108,14 @@ mBackup = mImage;
 % Update handles structure
 guidata( handles.axes1, handles );
 
-% --- Executes on button press in showSteps.
+% Set the flag so show the conversion steps
 function showSteps_Callback( hObject, eventdata, handles )
 global mShowSteps;
 mShowSteps = get( hObject,'Value' );
 
+% Set the number of colors to use 
 function numColors_Callback( hObject, eventdata, handles )
 global numColors;
-
 num = str2double( get( hObject, 'String' ) );
 if isnan( num ) || ~isreal( num ) 
     % Restore original value
@@ -117,13 +124,12 @@ else
     numColors = num;
     set( hObject, 'String', numColors );
 end
-
 % Update handles structure
 guidata( hObject, handles );
 
+% Set the precentage of vertices to keep
 function vertexPrecentage_Callback(hObject, eventdata, handles)
 global vertexPrecent;
-
 v = str2double( get( hObject, 'String' ) );
 if isnan( v ) || ~isreal( v ) 
     % Restore original value
@@ -132,14 +138,12 @@ else
     vertexPrecent = v;
     set( hObject, 'String', vertexPrecent );
 end
-
 % Update handles structure
 guidata( hObject, handles );
 
-
+% Set tha max error
 function maxError_Callback(hObject, eventdata, handles)
 global maxSquareError;
-
 e = str2double( get( hObject, 'String' ) );
 if isnan( e ) || ~isreal( e ) 
     % Restore original value
@@ -148,11 +152,10 @@ else
     maxSquareError = e;
     set( hObject, 'String', maxSquareError );
 end
-
 % Update handles structure
 guidata( hObject, handles );
 
-% --- Executes on button press in resetButton.
+% Reset the state of the GUI
 function resetButton_Callback( hObject, eventdata, handles )
 global mBackup;
 global mImage;
@@ -173,7 +176,7 @@ set( handles.maxError, 'String', maxSquareError );
 % Update handles structure
 guidata( hObject, handles );
 
-% --- Executes on button press in polygonalize.
+% Create a polygon or curve model from the image
 function polygonalize_Callback( hObject, eventdata, handles )
 global mImage;
 global mCurves;
@@ -182,7 +185,6 @@ global numColors;
 global vertexPrecent;
 global mShowSteps;
 global maxSquareError;
-
 if get( handles.polyMode, 'Value' )
     mPolys = toVector( mImage, numColors, vertexPrecent, mShowSteps,'polys', maxSquareError );
     mCurves = [];
@@ -190,30 +192,27 @@ elseif get( handles.curveMode, 'Value' );
     mCurves = toVector( mImage, numColors, vertexPrecent, mShowSteps,'curves', maxSquareError );
     mPolys = [];
 end
-
 % Update handles structure
 guidata( hObject, handles );
 
-% --- Executes on button press in exportButton.
+% Export the model using the SVG format
 function exportButton_Callback( hObject, eventdata, handles )
 global mCurves;
 global mPolys;
 toSVG( mPolys, mCurves );
 
-% --- Executes on button press in lineButton.
+% Find Hough lines in the image
 function lineButton_Callback(hObject, eventdata, handles)
 global mImage;
-
 lines = linesGui( 'Lines', hObject );
 linesHandle = guidata( lines );
 linesHandle.setImage( linesHandle, mImage );
 % Update handles structure
 guidata( hObject, handles );
 
-% --- Executes on button press in openButton.
+% Open and set the image to convert
 function openButton_Callback(hObject, eventdata, handles)
 global mImage;
-
 [name, path] = uigetfile( { '*.bmp; *.png; *.jpg'; '*.*' }, 'Open Image', '../res' );
 pathAndName = strcat( path, name );
 if( ( length( name ) ~= 1 ) && ( length( path ) ~= 1 ) );

@@ -100,9 +100,9 @@ varargout{1} = handles.output;
 function resetButton_Callback( hObject, eventdata, handles )
 global mBackup;
 global mImage;
-
 mImage = mBackup;
 imshow( mImage, 'Parent', handles.axes1 );
+guidata( hObject, handles );
 
 % --- Executes on button press in linesButton.
 function linesButton_Callback( hObject, eventdata, handles )
@@ -114,18 +114,19 @@ global mImage;
 global mFill;
 global mMin;
 global mShowSteps;
-
-%axis on, axis normal, hold on;
+% Convert to grayscale
 image = rgb2gray( mImage );
 imshow( image, 'Parent', handles.axes1 );
 if mShowSteps == 1
     pause;
 end
+% Find Edges
 edges = edge( image, 'canny' );
 imshow( edges, 'Parent', handles.axes1 );
 if mShowSteps == 1
     pause;
 end
+% Standard Hough Transform
 [H, theta, rho] = hough( edges );
 imshow( H, [], 'XData', theta, 'YData', rho, 'InitialMagnification', 'fit', 'Parent', handles.axes1 );
 xlabel( handles.axes1, '\theta');
@@ -133,6 +134,7 @@ ylabel( handles.axes1, '\rho' );
 if mShowSteps == 1
     pause;
 end
+% Find the Hough Peaks
 peaks = houghpeaks( H, 500, 'threshold', ceil( 0.3 * max( H( : ) ) ) );
 x = theta( peaks( :, 2 ) ); 
 y = rho( peaks( :, 1 ) );
@@ -140,12 +142,11 @@ plot( handles.axes1, x, y, 's', 'color', 'red' );
 if mShowSteps == 1
     pause;
 end
+% Find the Hough Lines
 lines = houghlines( H, theta, rho, peaks, 'FillGap', mFill, 'MinLength', mMin );
 imshow( mImage, 'Parent', handles.axes1 );
 hold( handles.axes1 );
-%hold on;
 for k = 1:length( lines )
-    
     x1 = lines(k).point1(2);
     y1 = lines(k).point1(1);
     x2 = lines(k).point2(2);
@@ -153,14 +154,12 @@ for k = 1:length( lines )
     plot([x1 x2],[y1 y2],'Color','g','LineWidth', 4)
 end
 hold( handles.axes1 );
-
 guidata( hObject, handles );
    
 
 % Set the gap distance to fill
 function gapFill_Callback( hObject, eventdata, handles )
 global mFill;
-
 fill = str2double( get( hObject, 'String' ) );
 if isnan( fill ) || ~isreal( fill ) 
     % Restore original value
@@ -169,11 +168,11 @@ else
     mFill = fill;
     set( hObject, 'String', mFill );
 end
+guidata( hObject, handles );
 
 % Set the minimum length for lines
 function minLength_Callback( hObject, eventdata, handles )
 global mMin;
-
 min = str2double( get( hObject, 'String' ) );
 if isnan( min ) || ~isreal( min ) 
     % Restore original value
@@ -182,6 +181,7 @@ else
     mMin = min;
     set( hObject, 'String', mMin );
 end
+guidata( hObject, handles );
 
 % Toggle flag to display steps
 function showStepsChecked_Callback( hObject, eventdata, handles )
